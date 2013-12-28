@@ -1,9 +1,9 @@
-﻿// #target photoshop
+﻿#target photoshop
 
 // groupLayers.jsx
 // 
 // Name: groupLayers
-// Version: 0.2
+// Version: 0.3
 // 
 // Description:     
 // This script creates a group for each of the selected layers.The name
@@ -24,22 +24,11 @@ function main() {
     for (var a in sLayers) {
         selectLayerById(Number(sLayers[a]));
         var activeLayer = doc.activeLayer;
-        if (activeLayer.typename == "LayerSet") {
-            var newLayerSet = doc.layerSets.add();
-            newLayerSet.move(activeLayer, ElementPlacement.PLACEBEFORE);
-            var newLayerSetIdx = getLayersetIdx();
-            newLayerSet.name = getLayerNameByID(Number(sLayers[a])) + "_comp";
-            selectLayerById(Number(sLayers[a])); 
-            moveLayerset(activeLayer.name, newLayerSetIdx);
-        } else if (activeLayer.typename == "ArtLayer") {
-            var newLayerSet = doc.layerSets.add();
-            newLayerSet.move(activeLayer, ElementPlacement.PLACEBEFORE);
-            newLayerSet.name = getLayerNameByID(Number(sLayers[a])) + "_comp";
-            selectLayerById(Number(sLayers[a]));
-            activeLayer.move(newLayerSet, ElementPlacement.INSIDE);
-        } else {
-            alert("This script only works with regular layers and groups.");
-        }
+        var newLayerSet = doc.layerSets.add();
+        newLayerSet.move(activeLayer, ElementPlacement.PLACEBEFORE);
+        newLayerSet.name = getLayerNameByID(Number(sLayers[a])) + "_comp";
+        selectOneDown()
+        moveUp()
     }
 };
 
@@ -126,22 +115,37 @@ function getSelectedLayersIdx() {
     return selectedLayers;
 };
 
-function getLayersetIdx() {
-    var ref = new ActionReference();
-    ref.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
-    var desc = executeActionGet(ref);
-    var idx = desc.getInteger(charIDToTypeID("ItmI"));
-    return idx - 1;
-}
+function selectOneDown() {
+    var idslct = charIDToTypeID( "slct" );
+        var desc80 = new ActionDescriptor();
+        var idnull = charIDToTypeID( "null" );
+            var ref88 = new ActionReference();
+            var idLyr = charIDToTypeID( "Lyr " );
+            var idOrdn = charIDToTypeID( "Ordn" );
+            var idBckw = charIDToTypeID( "Bckw" );
+            ref88.putEnumerated( idLyr, idOrdn, idBckw );
+        desc80.putReference( idnull, ref88 );
+        var idMkVs = charIDToTypeID( "MkVs" );
+        desc80.putBoolean( idMkVs, false );
+    executeAction( idslct, desc80, DialogModes.NO );
+};
 
-function moveLayerset(groupName, idx) {
-    var desc = new ActionDescriptor();
-    var ref = new ActionReference();
-    ref.putName(charIDToTypeID("Lyr "), groupName);
-    desc.putReference(charIDToTypeID("null"), ref);
-    var ref1 = new ActionReference();
-    ref1.putIndex(charIDToTypeID("Lyr "), idx);
-    desc.putReference(charIDToTypeID("T   "), ref1);
-    desc.putBoolean(charIDToTypeID("Adjs"), false);
-    executeAction(charIDToTypeID("move"), desc, DialogModes.NO);
+function moveUp() {
+    var idmove = charIDToTypeID( "move" );
+        var desc81 = new ActionDescriptor();
+        var idnull = charIDToTypeID( "null" );
+            var ref89 = new ActionReference();
+            var idLyr = charIDToTypeID( "Lyr " );
+            var idOrdn = charIDToTypeID( "Ordn" );
+            var idTrgt = charIDToTypeID( "Trgt" );
+            ref89.putEnumerated( idLyr, idOrdn, idTrgt );
+        desc81.putReference( idnull, ref89 );
+        var idT = charIDToTypeID( "T   " );
+            var ref90 = new ActionReference();
+            var idLyr = charIDToTypeID( "Lyr " );
+            var idOrdn = charIDToTypeID( "Ordn" );
+            var idNxt = charIDToTypeID( "Nxt " );
+            ref90.putEnumerated( idLyr, idOrdn, idNxt );
+        desc81.putReference( idT, ref90 );
+    executeAction( idmove, desc81, DialogModes.NO );
 };
