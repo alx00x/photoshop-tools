@@ -1,13 +1,14 @@
-﻿#target photoshop
+﻿// #target photoshop
 
 // groupLayers.jsx
 // 
 // Name: groupLayers
-// Version: 0.1
+// Version: 0.2
 // 
 // Description:     
-// This script  creates a groop for each of the selected layers.The name
-// of the newly created groups is taken from the layes themselves.
+// This script creates a group for each of the selected layers.The name
+// of the newly created group is taken from the layer and the postfix 
+// "_comp" is added.
 //  
 
 main();
@@ -23,18 +24,21 @@ function main() {
     for (var a in sLayers) {
         selectLayerById(Number(sLayers[a]));
         var activeLayer = doc.activeLayer;
-        var newLayerSet = doc.layerSets.add();
-        newLayerSet.move(activeLayer, ElementPlacement.PLACEBEFORE);
-        var newLayerSetIdx = getLayersetIdx();
-        
-        newLayerSet.name = getLayerNameByID(Number(sLayers[a])) + "_comp";
-        
-        selectLayerById(Number(sLayers[a]));
-
-        if (activeLayer instanceof LayerSet) {
+        if (activeLayer.typename == "LayerSet") {
+            var newLayerSet = doc.layerSets.add();
+            newLayerSet.move(activeLayer, ElementPlacement.PLACEBEFORE);
+            var newLayerSetIdx = getLayersetIdx();
+            newLayerSet.name = getLayerNameByID(Number(sLayers[a])) + "_comp";
+            selectLayerById(Number(sLayers[a])); 
             moveLayerset(activeLayer.name, newLayerSetIdx);
-        } else if (app.activeDocument.activeLayer instanceof ArtLayer ) {
+        } else if (activeLayer.typename == "ArtLayer") {
+            var newLayerSet = doc.layerSets.add();
+            newLayerSet.move(activeLayer, ElementPlacement.PLACEBEFORE);
+            newLayerSet.name = getLayerNameByID(Number(sLayers[a])) + "_comp";
+            selectLayerById(Number(sLayers[a]));
             activeLayer.move(newLayerSet, ElementPlacement.INSIDE);
+        } else {
+            alert("This script only works with regular layers and groups.");
         }
     }
 };
