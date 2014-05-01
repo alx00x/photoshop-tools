@@ -3,11 +3,11 @@
 // lumaFromLayer.jsx
 // 
 // Name: lumaFromLayer
-// Version: 0.1
+// Version: 0.2
 // 
 // Description:     
-// This script  creates a luma layer for after effects. It considers both
-// transparancy and masks of currently selected layer.
+// Creates a luma layer for after effects. It considers both
+// transparency and masks of currently selected layer.
 //  
 
 main();
@@ -93,7 +93,7 @@ var idMk = charIDToTypeID( "Mk  " );
 executeAction( idMk, desc3, DialogModes.NO );
 app.activeDocument.activeLayer.name = theR+"R_"+theG+"G_"+theB+"B"
 return app.activeDocument.activeLayer
-};
+}
 
 function addToLayerSelection(layer) {
     var desc = new ActionDescriptor();
@@ -103,7 +103,7 @@ function addToLayerSelection(layer) {
     desc.putEnumerated( stringIDToTypeID('selectionModifier'), stringIDToTypeID('selectionModifierType'), stringIDToTypeID('addToSelection') );
     desc.putBoolean( charIDToTypeID('MkVs'), false );
     executeAction( charIDToTypeID('slct'), desc, DialogModes.NO );
-};
+}
 
 function selectAbove() {
     var idslct = charIDToTypeID("slct");
@@ -155,4 +155,4 @@ function addColorOverlay(r,g,b) {
         effectsDesc.putObject( charIDToTypeID('SoFi'), charIDToTypeID('SoFi'), colorfillDesc );
     desc.putObject( charIDToTypeID('T   '), charIDToTypeID('Lefx'), effectsDesc );
     executeAction( charIDToTypeID('setd'), desc, DialogModes.NO );
-};
+}
